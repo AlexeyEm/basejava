@@ -4,45 +4,37 @@
 
 public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
-    private int size = -1; //Размер массива без null
+    private int size = 0; //Размер массива без null
 
     void clear() {
         for (int i = 0; i < size + 1; i++) {
             storage[i] = null;
         }
-        size = -1;
+        size = 0;
     }
 
     Resume get(String uuid) {
-        Resume resume = null;
-        for (int i = 0; i < size + 1; i++) {
+        for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equalsIgnoreCase(uuid))
-                resume = storage[i];
+                return storage[i];
         }
-        return resume;
+        return null;
     }
 
     void save(Resume r) {
-        Resume resume = this.get(r.uuid);
-        //Если резюме нет в массиве, то создаем
+        Resume resume = get(r.uuid);
         if (resume == null) {
-            size++;
             storage[size] = r;
+            size++;
         }
     }
 
     void delete(String uuid) {
         boolean isNeedShift = false; //Признак: нужен сдвиг
 
-        for (int i = 0; i < size + 1; i++) {
-            //Если удаляется непоследний элемент массива
-            if (storage[i].uuid.equalsIgnoreCase(uuid) && i != size) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equalsIgnoreCase(uuid)) {
                 isNeedShift = true;
-                size--;
-            }
-            //Если удаляется последний элемент массива
-            if (storage[i].uuid.equalsIgnoreCase(uuid) && i == size) {
-                storage[i] = null;
                 size--;
             }
             //Сдвиг влево
@@ -56,14 +48,14 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] resultStorage = new Resume[size + 1];
+        Resume[] resultStorage = new Resume[size];
         if (size >= 0) {
-            System.arraycopy(storage, 0, resultStorage, 0, size + 1);
+            System.arraycopy(storage, 0, resultStorage, 0, size);
         }
         return resultStorage;
     }
 
     int size() {
-        return this.size + 1;
+        return this.size;
     }
 }
