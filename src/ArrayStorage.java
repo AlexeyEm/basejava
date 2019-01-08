@@ -1,3 +1,5 @@
+import static java.util.Arrays.fill;
+
 /**
  * Array based storage for Resumes
  */
@@ -6,41 +8,57 @@ public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
     private int size = 0; //Размер массива без null
 
-    void clear() {
-        for (int i = 0; i < size + 1; i++) {
-            storage[i] = null;
+    int getStorageIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equalsIgnoreCase(uuid))
+                return i;
         }
+        return -1;
+    }
+
+    void clear() {
+        fill(storage, 0, size + 1, null);
         size = 0;
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equalsIgnoreCase(uuid))
-                return storage[i];
+        int storageIndex = getStorageIndex(uuid);
+        if (storageIndex != -1)
+            return storage[storageIndex];
+        else {
+            System.out.println("Get method: Resume '" + uuid + "' not found in Storage");
+            return null;
         }
-        return null;
     }
 
     void save(Resume r) {
-        Resume resume = get(r.uuid);
-        if (resume == null) {
-            storage[size] = r;
-            size++;
+        if (storage.length == size - 1) {
+            System.out.println("Save method: Storage is full");
+        } else {
+            if (getStorageIndex(r.uuid) == -1) {
+                storage[size] = r;
+                size++;
+            }
         }
     }
 
     void delete(String uuid) {
-        boolean isNeedShift = false; //Признак: нужен сдвиг
+        int storageIndex = getStorageIndex(uuid);
+        if (storageIndex == -1) {
+            System.out.println("Delete method: Resume '" + uuid + "' not found in Storage");
+        } else {
+            storage[storageIndex] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
+        }
+    }
 
-        for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equalsIgnoreCase(uuid)) {
-                isNeedShift = true;
-                size--;
-            }
-            //Сдвиг влево
-            if (isNeedShift) {
-                storage[i] = storage[i + 1];
-            }
+    void update(Resume resume) {
+        int storageIndex = getStorageIndex(resume.uuid);
+        if (storageIndex != -1) {
+            storage[storageIndex] = resume;
+        } else {
+            System.out.println("Update method: Resume '" + resume.uuid + "' not found in Storage");
         }
     }
 
