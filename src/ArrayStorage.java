@@ -5,24 +5,16 @@ import static java.util.Arrays.fill;
  */
 
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private Resume[] storage = new Resume[10_000];
     private int size = 0; //Размер массива без null
 
-    int getStorageIndex(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equalsIgnoreCase(uuid))
-                return i;
-        }
-        return -1;
-    }
-
-    void clear() {
-        fill(storage, 0, size + 1, null);
+    public void clear() {
+        fill(storage, 0, size, null);
         size = 0;
     }
 
-    Resume get(String uuid) {
-        int storageIndex = getStorageIndex(uuid);
+    public Resume get(String uuid) {
+        int storageIndex = getIndex(uuid);
         if (storageIndex != -1)
             return storage[storageIndex];
         else {
@@ -31,19 +23,22 @@ public class ArrayStorage {
         }
     }
 
-    void save(Resume r) {
-        if (storage.length == size - 1) {
+    public void save(Resume r) {
+        if (storage.length == size) {
             System.out.println("Save method: Storage is full");
         } else {
-            if (getStorageIndex(r.uuid) == -1) {
+            if (getIndex(r.getUuid()) == -1) {
                 storage[size] = r;
-                size++;
+                if (storage.length > size)
+                    size++;
+            } else {
+                System.out.println("Save method: Resume '" + r.getUuid() + "' already exists in Storage");
             }
         }
     }
 
-    void delete(String uuid) {
-        int storageIndex = getStorageIndex(uuid);
+    public void delete(String uuid) {
+        int storageIndex = getIndex(uuid);
         if (storageIndex == -1) {
             System.out.println("Delete method: Resume '" + uuid + "' not found in Storage");
         } else {
@@ -53,27 +48,33 @@ public class ArrayStorage {
         }
     }
 
-    void update(Resume resume) {
-        int storageIndex = getStorageIndex(resume.uuid);
+    public void update(Resume resume) {
+        int storageIndex = getIndex(resume.getUuid());
         if (storageIndex != -1) {
             storage[storageIndex] = resume;
         } else {
-            System.out.println("Update method: Resume '" + resume.uuid + "' not found in Storage");
+            System.out.println("Update method: Resume '" + resume.getUuid() + "' not found in Storage");
         }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
+    public Resume[] getAll() {
         Resume[] resultStorage = new Resume[size];
-        if (size >= 0) {
-            System.arraycopy(storage, 0, resultStorage, 0, size);
-        }
+        System.arraycopy(storage, 0, resultStorage, 0, size);
         return resultStorage;
     }
 
-    int size() {
-        return this.size;
+    public int size() {
+        return size;
+    }
+
+    private int getIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(uuid))
+                return i;
+        }
+        return -1;
     }
 }
