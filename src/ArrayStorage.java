@@ -6,7 +6,7 @@ import static java.util.Arrays.fill;
 
 public class ArrayStorage {
     private Resume[] storage = new Resume[10_000];
-    private int size = 0; //Размер массива без null
+    private int size = 0; //Array's size without null
 
     public void clear() {
         fill(storage, 0, size, null);
@@ -29,8 +29,7 @@ public class ArrayStorage {
         } else {
             if (getIndex(r.getUuid()) == -1) {
                 storage[size] = r;
-                if (storage.length > size)
-                    size++;
+                size++;
             } else {
                 System.out.println("Save method: Resume '" + r.getUuid() + "' already exists in Storage");
             }
