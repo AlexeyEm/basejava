@@ -18,25 +18,15 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void delete(int index, String uuid) {
-        if (index == -1) {
-            System.out.println("Resume " + uuid + " not exist");
-        } else {
-            storage[index] = storage[size - 1];
-            storage[size - 1] = null;
-            size--;
-        }
+    protected void deleteElement(int index) {
+        storage[index] = storage[size - 1];
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
-    protected void save(int index, Resume r) {
-        if (index != -1) {
-            System.out.println("Resume " + r.getUuid() + " already exist");
-        } else if (size >= STORAGE_LIMIT) {
-            System.out.println("Storage overflow");
-        } else {
-            storage[size] = r;
-            size++;
-        }
+    protected void saveElement(int index, Resume r) {
+        storage[size] = r;
+        size++;
     }
 }
