@@ -4,50 +4,45 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 
-import static java.lang.Math.abs;
-
 public class SortedArrayStorage extends AbstractArrayStorage {
-
-    @Override
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index > -1) {
-            System.out.println("Resume " + r.getUuid() + " already exist");
-        } else if (size >= STORAGE_LIMIT) {
-            System.out.println("Storage overflow");
-        } else {
-            if (size < abs(index)) {
-                storage[size] = r;
-            } else {
-                //Shift right
-                for (int i = size; i > (abs(index) - 1); i--) {
-                    storage[i] = storage[i - 1];
-                }
-                storage[abs(index) - 1] = r;
-            }
-            size++;
-        }
-    }
-
-    @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            System.out.println("Delete Method: Resume " + uuid + " not exist");
-        } else {
-            for (int i = index; i < size; i++) {
-                //Shift left
-                storage[i] = storage[i + 1];
-            }
-            size--;
-        }
-    }
 
     @Override
     protected int getIndex(String uuid) {
         Resume searchKey = new Resume();
         searchKey.setUuid(uuid);
-        int a = Arrays.binarySearch(storage, 0, size, searchKey);
-        return a;
+        return Arrays.binarySearch(storage, 0, size, searchKey);
+    }
+
+    @Override
+    protected void delete(int index, String uuid) {
+        if (index < 0) {
+            System.out.println("Delete Method: Resume " + uuid + " not exist");
+        } else {
+            //Copy with shift left
+            System.arraycopy(storage, index + 1, storage, index, size - index - 1);
+            //Delete last element
+            storage[size - 1] = null;
+            size--;
+        }
+    }
+
+    @Override
+    protected void save(int index, Resume r) {
+        if (index > -1) {
+            System.out.println("Resume " + r.getUuid() + " already exist");
+        } else if (size >= STORAGE_LIMIT) {
+            System.out.println("Storage overflow");
+        } else {
+            if (size < -index) {
+                storage[size] = r;
+            } else {
+                //Index of the new element
+                index = -index - 1;
+                //Copy with shift right
+                System.arraycopy(storage, index, storage, index + 1, size - index);
+                storage[index] = r;
+            }
+            size++;
+        }
     }
 }
