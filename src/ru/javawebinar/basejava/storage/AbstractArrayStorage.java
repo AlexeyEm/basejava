@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.ExistStorageException;
-import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -16,31 +15,26 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        } else {
-            storage[index] = r;
-        }
-    }
-
     /**
      * @return array, contains only Resumes in storage (without null)
      */
+    @Override
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
+    @Override
     public void save(Resume r) {
         int index = getIndex(r.getUuid());
         if (index >= 0) {
@@ -53,43 +47,21 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         }
     }
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            fillDeletedElement(index);
-            storage[size - 1] = null;
-            size--;
-        }
-    }
-
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return storage[index];
-    }
-
     @Override
-    protected boolean containsResume(Resume r) {
-        return false;
-    }
-
-    @Override
-    protected void addResume(Resume r) {
+    protected void saveResume(Resume r) {
 
     }
 
     @Override
-    protected Resume getResume(Resume r) {
-        return null;
+    protected void updateResume(Resume r) {
+        storage[getIndex(r.getUuid())] = r;
     }
 
     @Override
-    protected void setStorage(Resume r) {
-
+    protected void deleteResume(String uuid) {
+        fillDeletedElement(getIndex(uuid));
+        storage[size - 1] = null;
+        size--;
     }
 
     protected abstract void fillDeletedElement(int index);
@@ -97,4 +69,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void insertElement(Resume r, int index);
 
     protected abstract int getIndex(String uuid);
+
+    @Override
+    protected Resume doGet(int index) {
+        return storage[index];
+    }
 }

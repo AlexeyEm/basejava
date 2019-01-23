@@ -11,32 +11,35 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void update(Resume r) {
-        if (containsResume(r)) {
-            setStorage(r);
-        } else {
+        int index = getIndex(r.getUuid());
+        if (index < 0) {
             throw new NotExistStorageException(r.getUuid());
         }
+        updateResume(r);
     }
 
     public void save(Resume r) {
-        if (containsResume(r)) {
+        int index = getIndex(r.getUuid());
+        if (index >= 0) {
             throw new ExistStorageException(r.getUuid());
-        } else {
-            addResume(r);
         }
+        saveResume(r);
     }
 
     public Resume get(String uuid) {
-        Resume resume = new Resume(uuid);
-        if (containsResume(resume)) {
-            return getResume(resume);
-        } else {
+        int index = getIndex(uuid);
+        if (index < 0) {
             throw new NotExistStorageException(uuid);
         }
+        return doGet(index);
     }
 
     public void delete(String uuid) {
-
+        int index = getIndex(uuid);
+        if (index < 0) {
+            throw new NotExistStorageException(uuid);
+        }
+        deleteResume(uuid);
     }
 
     public Resume[] getAll() {
@@ -47,8 +50,9 @@ public abstract class AbstractStorage implements Storage {
         return 0;
     }
 
-    protected abstract boolean containsResume(Resume r);
-    protected abstract void addResume(Resume r);
-    protected abstract Resume getResume(Resume r);
-    protected abstract void setStorage(Resume r);
+    protected abstract int getIndex(String uuid);
+    protected abstract Resume doGet(int index);
+    protected abstract void saveResume(Resume r);
+    protected abstract void updateResume(Resume r);
+    protected abstract void deleteResume(String uuid);
 }
