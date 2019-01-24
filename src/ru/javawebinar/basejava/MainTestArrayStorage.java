@@ -1,9 +1,7 @@
 package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.storage.ArrayStorage;
-import ru.javawebinar.basejava.storage.SortedArrayStorage;
-import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.storage.*;
 
 /**
  * Test ru.javawebinar.basejava.storage.ArrayStorage
@@ -11,6 +9,9 @@ import ru.javawebinar.basejava.storage.Storage;
 public class MainTestArrayStorage {
     static final Storage ARRAY_STORAGE = new ArrayStorage();
     static final Storage SORTED_ARRAY_STORAGE = new SortedArrayStorage();
+
+    static final Storage LIST_ARRAY_STORAGE = new ListStorage();
+    static final Storage HM_ARRAY_STORAGE = new MapStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1");
@@ -73,6 +74,20 @@ public class MainTestArrayStorage {
     static void printAllSorted() {
         System.out.println("\nGet All");
         for (Resume r : SORTED_ARRAY_STORAGE.getAll()) {
+            System.out.println(r);
+        }
+    }
+
+    static void printAllList() {
+        System.out.println("\nGet All");
+        for (Resume r : LIST_ARRAY_STORAGE.getAll()) {
+            System.out.println(r);
+        }
+    }
+
+    static void printAllHM() {
+        System.out.println("\nGet All");
+        for (Resume r : HM_ARRAY_STORAGE.getAll()) {
             System.out.println(r);
         }
     }
