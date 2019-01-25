@@ -7,44 +7,46 @@ import ru.javawebinar.basejava.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
+        Object searchKey = getSearchKey(r.getUuid());
+        if (!isExistResume(searchKey)) {
             throw new NotExistStorageException(r.getUuid());
         }
-        updateResume(index, r);
+        updateResume(searchKey, r);
     }
 
     public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index >= 0) {
+        Object searchKey = getSearchKey(r.getUuid());
+        if (isExistResume(searchKey)) {
             throw new ExistStorageException(r.getUuid());
         }
-        saveResume(index, r);
+        saveResume(searchKey, r);
     }
 
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExistResume(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
-        return doGet(index);
+        return doGet(searchKey);
     }
 
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExistResume(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
-        deleteResume(index);
+        deleteResume(searchKey);
     }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Resume doGet(Object searchKey);
 
-    protected abstract Resume doGet(int index);
+    protected abstract void saveResume(Object searchKey, Resume r);
 
-    protected abstract void saveResume(int index, Resume r);
+    protected abstract void updateResume(Object searchKey, Resume r);
 
-    protected abstract void updateResume(int index, Resume r);
+    protected abstract void deleteResume(Object searchKey);
 
-    protected abstract void deleteResume(int index);
+    protected abstract Object getSearchKey(String uuid);
+
+    protected abstract boolean isExistResume(Object searchKey);
 }

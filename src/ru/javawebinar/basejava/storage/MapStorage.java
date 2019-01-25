@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.HashMap;
@@ -15,13 +14,6 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public void delete(String uuid) {
-        if (storage.remove(uuid) == null) {
-            throw new NotExistStorageException(uuid);
-        }
-    }
-
-    @Override
     public Resume[] getAll() {
         return storage.values().toArray(new Resume[storage.size()]);
     }
@@ -32,27 +24,32 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
-        return -1;
+    protected Resume doGet(Object searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected Resume doGet(int index) {
-        return null;
-    }
-
-    @Override
-    protected void saveResume(int index, Resume r) {
+    protected void saveResume(Object searchKey, Resume r) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected void updateResume(int index, Resume r) {
-
+    protected void updateResume(Object searchKey, Resume r) {
+        saveResume(searchKey, r);
     }
 
     @Override
-    protected void deleteResume(int index) {
+    protected void deleteResume(Object searchKey) {
+        storage.remove(searchKey);
+    }
 
+    @Override
+    protected Object getSearchKey(String uuid) {
+        return uuid;
+    }
+
+    @Override
+    protected boolean isExistResume(Object searchKey) {
+        return storage.containsKey(searchKey);
     }
 }
