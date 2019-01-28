@@ -16,10 +16,4 @@ public class MapStorageTest extends AbstractStorageTest {
         Resume[] array = storage.getAll();
         assertEquals(3, array.length);
     }
-
-    @Test
-    @Override
-    public void saveOverflow() throws Exception {
-
-    }
 }
