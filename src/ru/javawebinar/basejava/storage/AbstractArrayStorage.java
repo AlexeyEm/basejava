@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -25,34 +26,42 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    protected void doUpdate(Object index, Resume r) {
+        storage[(int) index] = r;
+    }
+
+
+    @Override
+    public List<Resume> getList() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
     @Override
-    protected void saveResume(Object searchKey, Resume r) {
+    protected void doSave(Object index, Resume r) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", r.getUuid());
         } else {
-            insertElement(r, (int) searchKey);
+            insertElement(r, (int) index);
             size++;
         }
     }
 
     @Override
-    protected void updateResume(Object searchKey, Resume r) {
-        storage[(int) searchKey] = r;
+    protected void doDelete(Object index) {
+        fillDeletedElement((int) index);
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
-    protected void deleteResume(Object searchKey) {
-        fillDeletedElement((int) searchKey);
-        storage[size - 1] = null;
-        size--;
+    protected Resume doGet(Object index) {
+        return storage[(int) index];
+    }
+
+    @Override
+    protected boolean isExist(Object index) {
+        return (int) index >= 0;
     }
 
     protected abstract void fillDeletedElement(int index);
@@ -60,15 +69,5 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void insertElement(Resume r, int index);
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage[(int) searchKey];
-    }
-
-    @Override
-    protected abstract Object getSearchKey(String uuid);
-
-    @Override
-    protected boolean isExistResume(Object searchKey) {
-        return (int) searchKey >= 0;
-    }
+    protected abstract Object getSearchKey(Resume r);
 }
