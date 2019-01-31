@@ -2,13 +2,13 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MapResumeStorage extends AbstractStorage {
-    private Map<Resume, Resume> storage = new HashMap<>();
+    private Map<Object, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
@@ -17,7 +17,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected List<Resume> getList() {
-        return storage.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -31,13 +31,13 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume r) {
-        storage.put((Resume) searchKey, r);
+    protected void doSave(Object searchKey, Resume resume) {
+        storage.put(searchKey, resume);
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume r) {
-        doSave(searchKey, r);
+    protected void doUpdate(Object searchKey, Resume resume) {
+        doSave(searchKey, resume);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKey(Resume r) {
-        return r;
+    protected Object getSearchKey(String uuid) {
+        return uuid.hashCode();
     }
 
     @Override

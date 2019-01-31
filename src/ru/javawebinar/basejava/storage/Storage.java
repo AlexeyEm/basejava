@@ -8,13 +8,13 @@ public interface Storage {
 
     void clear();
 
-    void update(Resume r);
+    void update(Resume resume);
 
-    void save(Resume r);
+    void save(Resume resume);
 
-    Resume get(Resume r);
+    Resume get(String uuid);
 
-    void delete(Resume r);
+    void delete(String uuid);
 
     List<Resume> getAllSorted();
 
