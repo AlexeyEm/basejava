@@ -11,10 +11,24 @@ public class ListSection extends AbstractSection {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ListSection)) return false;
+
+        ListSection that = (ListSection) o;
+
+        return list.equals(that.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return list.hashCode();
+    }
+
+    @Override
     public String toString() {
-        String result = list.stream()
-                .map(n -> String.valueOf(n))
+        return list.stream()
+                .map(String::valueOf)
                 .collect(Collectors.joining("\n"));
-        return result;
     }
 }

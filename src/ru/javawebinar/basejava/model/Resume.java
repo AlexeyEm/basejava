@@ -1,7 +1,7 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -12,8 +12,8 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private String fullName;
-    private Map<ContactType, ContactData> contact;
-    private Map<SectionType, AbstractSection> section;
+    private Map<ContactType, ContactData> contact = new EnumMap<>(ContactType.class);
+    private Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -43,23 +43,24 @@ public class Resume {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Resume)) return false;
+
         Resume resume = (Resume) o;
-        return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName);
+
+        if (!uuid.equals(resume.uuid)) return false;
+        if (!fullName.equals(resume.fullName)) return false;
+        if (!contact.equals(resume.contact)) return false;
+        return section.equals(resume.section);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName);
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + contact.hashCode();
+        result = 31 * result + section.hashCode();
+        return result;
     }
-
-//    @Override
-//    public String toString() {
-//        return "Resume{" +
-//                "uuid='" + uuid + '\'' +
-//                ", fullName='" + fullName + '\'' +
-//                '}';
-//    }
 
     public String toString() {
         return fullName + '\n' +
