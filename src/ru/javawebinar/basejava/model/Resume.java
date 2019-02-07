@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,6 +12,8 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private String fullName;
+    private Map<ContactType, ContactData> contact;
+    private Map<SectionType, AbstractSection> section;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -29,6 +32,14 @@ public class Resume {
         return fullName;
     }
 
+    public void setContact(Map<ContactType, ContactData> contact) {
+        this.contact = contact;
+    }
+
+    public void setSection(Map<SectionType, AbstractSection> section) {
+        this.section = section;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,11 +53,17 @@ public class Resume {
         return Objects.hash(uuid, fullName);
     }
 
-    @Override
+//    @Override
+//    public String toString() {
+//        return "Resume{" +
+//                "uuid='" + uuid + '\'' +
+//                ", fullName='" + fullName + '\'' +
+//                '}';
+//    }
+
     public String toString() {
-        return "Resume{" +
-                "uuid='" + uuid + '\'' +
-                ", fullName='" + fullName + '\'' +
-                '}';
+        return fullName + '\n' +
+               contact + '\n' +
+               section;
     }
 }
