@@ -1,24 +1,14 @@
 package ru.javawebinar.basejava.model;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import java.util.List;
 
 public class Experience {
-    private String name;
-    private String url;
-    private LocalDate beginDate;
-    private LocalDate endDate;
-    private String title;
-    private String text;
+    private final Link homePage;
+    private List<Position> positions;
 
-    public Experience(String name, String url, LocalDate beginDate, LocalDate endDate, String title, String text) {
-        this.name = name;
-        this.url = url;
-        this.beginDate = beginDate;
-        this.endDate = endDate;
-        this.title = title;
-        this.text = text;
+    public Experience(String name, String url, List<Position> positions) {
+        this.homePage = new Link(name, url);
+        this.positions = positions;
     }
 
     @Override
@@ -28,34 +18,22 @@ public class Experience {
 
         Experience that = (Experience) o;
 
-        if (!name.equals(that.name)) return false;
-        if (!Objects.equals(url, that.url)) return false;
-        if (!beginDate.equals(that.beginDate)) return false;
-        if (!endDate.equals(that.endDate)) return false;
-        if (!title.equals(that.title)) return false;
-        return Objects.equals(text, that.text);
+        if (!homePage.equals(that.homePage)) return false;
+        return positions.equals(that.positions);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + beginDate.hashCode();
-        result = 31 * result + endDate.hashCode();
-        result = 31 * result + title.hashCode();
-        result = 31 * result + (text != null ? text.hashCode() : 0);
+        int result = homePage.hashCode();
+        result = 31 * result + positions.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "Experience{" +
-                "name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", beginDate=" + beginDate.format(DateTimeFormatter.ofPattern("MM/yyyy")) +
-                ", endDate=" + endDate.format(DateTimeFormatter.ofPattern("MM/yyyy")) +
-                ", title='" + title + '\'' +
-                ", text='" + text + '\'' +
+                "homePage=" + homePage +
+                ", positions=" + positions +
                 '}';
     }
 }

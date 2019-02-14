@@ -10,22 +10,28 @@ import java.util.Map;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        Resume resume = new Resume("Григорий Кислин");
-        Map<ContactType, ContactData> contactMap = new EnumMap<ContactType, ContactData>(ContactType.class);
+        Resume resume = createResume("uuid1", "Григорий Кислин");
+        System.out.println(resume);
+    }
+
+    public static Resume createResume(String uuid, String fullName){
+        Resume resume = new Resume(uuid, fullName);
+        Map<ContactType, String> contactMap = new EnumMap<>(ContactType.class);
         Map<SectionType, AbstractSection> sectionMap = new EnumMap<SectionType, AbstractSection>(SectionType.class);
         List<String> achievement = new ArrayList<>();
         List<String> qualification = new ArrayList<>();
         List<Experience> experience = new ArrayList<>();
         List<Experience> education = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
 
-        contactMap.put(ContactType.PHONE, new ContactData("+7(921) 855-0482"));
-        contactMap.put(ContactType.SKYPE, new ContactData("grigory.kislin"));
-        contactMap.put(ContactType.EMAIL, new ContactData("gkislin@yandex.ru"));
-        contactMap.put(ContactType.LINKEDIN, new ContactData("https://www.linkedin.com/in/gkislin"));
-        contactMap.put(ContactType.GITHUB, new ContactData("https://github.com/gkislin"));
-        contactMap.put(ContactType.STACKOVERFLOW, new ContactData("https://stackoverflow.com/users/548473"));
-        contactMap.put(ContactType.SITE, new ContactData("http://gkislin.ru/"));
-        resume.setContact(contactMap);
+        contactMap.put(ContactType.PHONE, "+7(921) 855-0482");
+        contactMap.put(ContactType.SKYPE, "grigory.kislin");
+        contactMap.put(ContactType.EMAIL, "gkislin@yandex.ru");
+        contactMap.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        contactMap.put(ContactType.GITHUB, "https://github.com/gkislin");
+        contactMap.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        contactMap.put(ContactType.SITE, "http://gkislin.ru/");
+        resume.setContacts(contactMap);
 
         sectionMap.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         sectionMap.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
@@ -43,18 +49,36 @@ public class ResumeTestData {
         qualification.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, SQLite, MS SQL, HSQLDB");
         sectionMap.put(SectionType.QUALIFICATIONS, new ListSection(qualification));
 
-        experience.add(new Experience("Java Online Projects", "http://javaops.ru/", LocalDate.of(2013, 10, 1), LocalDate.now(), "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок"));
-        experience.add(new Experience("Wrike", "https://www.wrike.com/", LocalDate.of(2014, 10, 1), LocalDate.of(2016, 1, 1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
-        experience.add(new Experience("RIT Center", null, LocalDate.of(2012, 4, 1), LocalDate.of(2014, 10, 1), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"));
+        positions.add(new Position(LocalDate.of(2013, 10, 1), LocalDate.now(), "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок"));
+        experience.add(new Experience("Java Online Projects", "http://javaops.ru/", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(2014, 10, 1), LocalDate.of(2016, 1, 1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+        experience.add(new Experience("Wrike", "https://www.wrike.com/", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(2012, 4, 1), LocalDate.of(2014, 10, 1), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"));
+        experience.add(new Experience("RIT Center", null, new ArrayList<>(positions)));
         sectionMap.put(SectionType.EXPERIENCE, new ExperienceSection(experience));
 
-        education.add(new Experience("Coursera", "https://www.coursera.org/course/progfun", LocalDate.of(2013, 3, 1), LocalDate.of(2013, 5, 1), "\"Functional Programming Principles in Scala\" by Martin Odersky", null));
-        education.add(new Experience("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", LocalDate.of(2011, 3, 1), LocalDate.of(2011, 4, 1), "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null));
-        education.add(new Experience("Siemens AG", "http://www.siemens.ru/", LocalDate.of(2005, 1, 1), LocalDate.of(2005, 4, 1), "3 месяца обучения мобильным IN сетям (Берлин)", null));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(2013, 3, 1), LocalDate.of(2013, 5, 1), "\"Functional Programming Principles in Scala\" by Martin Odersky", null));
+        education.add(new Experience("Coursera", "https://www.coursera.org/course/progfun", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(2011, 3, 1), LocalDate.of(2011, 4, 1), "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null));
+        education.add(new Experience("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(2005, 1, 1), LocalDate.of(2005, 4, 1), "3 месяца обучения мобильным IN сетям (Берлин)", null));
+        education.add(new Experience("Siemens AG", "http://www.siemens.ru/", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(1997, 9, 1), LocalDate.of(1998, 3, 1), "6 месяцев обучения цифровым телефонным сетям (Москва)", null));
+        education.add(new Experience("Alcatel", "http://www.alcatel.ru/", new ArrayList<>(positions)));
+        positions.clear();
+        positions.add(new Position(LocalDate.of(1993, 9, 1), LocalDate.of(1996, 7, 1), "Аспирантура (программист С, С++)", null));
+        positions.add(new Position(LocalDate.of(1987, 9, 1), LocalDate.of(1993, 3, 1), "Инженер (программист Fortran, C)", null));
+        education.add(new Experience("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", new ArrayList<>(positions)));
         sectionMap.put(SectionType.EDUCATION, new ExperienceSection(education));
 
-        resume.setSection(sectionMap);
+        resume.setSections(sectionMap);
 
-        System.out.println(resume);
+        return resume;
     }
 }

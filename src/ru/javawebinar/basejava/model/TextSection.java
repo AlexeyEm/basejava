@@ -1,10 +1,13 @@
 package ru.javawebinar.basejava.model;
 
-public class TextSection extends AbstractSection {
-    private String text;
+import java.util.Objects;
 
-    public TextSection(String text) {
-        this.text = text;
+public class TextSection extends AbstractSection {
+    private final String content;
+
+    public TextSection(String content) {
+        Objects.requireNonNull(content, "content must not be null");
+        this.content = content;
     }
 
     @Override
@@ -14,18 +17,16 @@ public class TextSection extends AbstractSection {
 
         TextSection that = (TextSection) o;
 
-        return text.equals(that.text);
+        return content.equals(that.content);
     }
 
     @Override
     public int hashCode() {
-        return text.hashCode();
+        return content.hashCode();
     }
 
     @Override
     public String toString() {
-        return "TextSection{" +
-                "text='" + text + '\'' +
-                '}';
+        return content;
     }
 }

@@ -1,13 +1,15 @@
 package ru.javawebinar.basejava.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ExperienceSection extends AbstractSection {
-    private List<Experience> list;
+    private List<Experience> organizations;
 
-    public ExperienceSection(List<Experience> list) {
-        this.list = list;
+    public ExperienceSection(List<Experience> organizations) {
+        Objects.requireNonNull(organizations, "organizations must not be null");
+        this.organizations = organizations;
     }
 
     @Override
@@ -17,17 +19,17 @@ public class ExperienceSection extends AbstractSection {
 
         ExperienceSection that = (ExperienceSection) o;
 
-        return list.equals(that.list);
+        return organizations.equals(that.organizations);
     }
 
     @Override
     public int hashCode() {
-        return list.hashCode();
+        return organizations.hashCode();
     }
 
     @Override
     public String toString() {
-        return list.stream()
+        return organizations.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("\n"));
     }

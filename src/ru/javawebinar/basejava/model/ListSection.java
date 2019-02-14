@@ -1,13 +1,15 @@
 package ru.javawebinar.basejava.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ListSection extends AbstractSection {
-    private List<String> list;
+    private List<String> items;
 
-    public ListSection(List<String> list) {
-        this.list = list;
+    public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "items must not be null");
+        this.items = items;
     }
 
     @Override
@@ -17,17 +19,17 @@ public class ListSection extends AbstractSection {
 
         ListSection that = (ListSection) o;
 
-        return list.equals(that.list);
+        return items.equals(that.items);
     }
 
     @Override
     public int hashCode() {
-        return list.hashCode();
+        return items.hashCode();
     }
 
     @Override
     public String toString() {
-        return list.stream()
+        return items.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("\n"));
     }
