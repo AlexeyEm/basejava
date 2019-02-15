@@ -16,14 +16,8 @@ public class ResumeTestData {
 
     public static Resume createResume(String uuid, String fullName){
         Resume resume = new Resume(uuid, fullName);
-        Map<ContactType, String> contactMap = new EnumMap<>(ContactType.class);
-        Map<SectionType, AbstractSection> sectionMap = new EnumMap<SectionType, AbstractSection>(SectionType.class);
-        List<String> achievement = new ArrayList<>();
-        List<String> qualification = new ArrayList<>();
-        List<Experience> experience = new ArrayList<>();
-        List<Experience> education = new ArrayList<>();
-        List<Position> positions = new ArrayList<>();
 
+        Map<ContactType, String> contactMap = new EnumMap<>(ContactType.class);
         contactMap.put(ContactType.PHONE, "+7(921) 855-0482");
         contactMap.put(ContactType.SKYPE, "grigory.kislin");
         contactMap.put(ContactType.EMAIL, "gkislin@yandex.ru");
@@ -33,9 +27,11 @@ public class ResumeTestData {
         contactMap.put(ContactType.SITE, "http://gkislin.ru/");
         resume.setContacts(contactMap);
 
+        Map<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
         sectionMap.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         sectionMap.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
+        List<String> achievement = new ArrayList<>();
         achievement.add("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.");
         achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.");
         achievement.add("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция с 1С, Bonita BPM, CMIS, LDAP. Разработка приложения управления окружением на стеке: Scala/Play/Anorm/JQuery. Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера.");
@@ -44,11 +40,14 @@ public class ResumeTestData {
         achievement.add("Реализация протоколов по приему платежей всех основных платежных системы России (Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа.");
         sectionMap.put(SectionType.ACHIEVEMENT, new ListSection(achievement));
 
+        List<String> qualification = new ArrayList<>();
         qualification.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualification.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         qualification.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, SQLite, MS SQL, HSQLDB");
         sectionMap.put(SectionType.QUALIFICATIONS, new ListSection(qualification));
 
+        List<Experience> experience = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         positions.add(new Position(LocalDate.of(2013, 10, 1), LocalDate.now(), "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок"));
         experience.add(new Experience("Java Online Projects", "http://javaops.ru/", new ArrayList<>(positions)));
         positions.clear();
@@ -59,6 +58,7 @@ public class ResumeTestData {
         experience.add(new Experience("RIT Center", null, new ArrayList<>(positions)));
         sectionMap.put(SectionType.EXPERIENCE, new ExperienceSection(experience));
 
+        List<Experience> education = new ArrayList<>();
         positions.clear();
         positions.add(new Position(LocalDate.of(2013, 3, 1), LocalDate.of(2013, 5, 1), "\"Functional Programming Principles in Scala\" by Martin Odersky", null));
         education.add(new Experience("Coursera", "https://www.coursera.org/course/progfun", new ArrayList<>(positions)));
