@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -7,9 +8,17 @@ import java.util.stream.Collectors;
 public class ExperienceSection extends AbstractSection {
     private List<Experience> organizations;
 
+    public ExperienceSection(Experience... experiences) {
+        this(Arrays.asList(experiences));
+    }
+
     public ExperienceSection(List<Experience> organizations) {
         Objects.requireNonNull(organizations, "organizations must not be null");
         this.organizations = organizations;
+    }
+
+    public List<Experience> getOrganizations() {
+        return organizations;
     }
 
     @Override
