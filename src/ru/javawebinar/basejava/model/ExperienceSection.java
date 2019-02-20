@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ExperienceSection extends AbstractSection {
+    private static final long serialVersionUID = 1L;
+
     private List<Experience> organizations;
 
     public ExperienceSection(Experience... experiences) {
