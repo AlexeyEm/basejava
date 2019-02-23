@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * ru.javawebinar.basejava.model.Resume class
- */
 public class Resume implements Serializable {
     private static final long serialVersionUID = 1L;
 

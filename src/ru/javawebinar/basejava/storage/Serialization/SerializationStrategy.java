@@ -1,4 +1,4 @@
-package ru.javawebinar.basejava.storage;
+package ru.javawebinar.basejava.storage.Serialization;
 
 import ru.javawebinar.basejava.model.Resume;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface SerializationMethod {
+public interface SerializationStrategy {
 
     void doWrite(Resume r, OutputStream os) throws IOException;
 
