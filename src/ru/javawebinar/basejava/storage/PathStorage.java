@@ -53,7 +53,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Path Path, Resume r) {
         try {
-            doWrite(r, new BufferedOutputStream(Files.newOutputStream(Path)));
+            serializationStrategy.doWrite(r, new BufferedOutputStream(Files.newOutputStream(Path)));
         } catch (IOException e) {
             throw new StorageException("Path write error", r.getUuid(), e);
         }
@@ -77,7 +77,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(path)));
+            return serializationStrategy.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path read error", path.getFileName().toString(), e);
         }
@@ -99,13 +99,5 @@ public class PathStorage extends AbstractStorage<Path> {
         } catch (IOException e) {
             throw new StorageException("Path doCopyAll error", null);
         }
-    }
-
-    private void doWrite(Resume r, OutputStream os) throws IOException {
-        serializationStrategy.doWrite(r, os);
-    }
-
-    private Resume doRead(InputStream is) throws IOException {
-        return serializationStrategy.doRead(is);
     }
 }
