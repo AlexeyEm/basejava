@@ -5,30 +5,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ExperienceSection extends AbstractSection {
+public class OrganizationSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
-    private List<Experience> organizations;
+    private List<Organization> organizations;
 
-    public ExperienceSection(Experience... experiences) {
+    public OrganizationSection() {
+    }
+
+    public OrganizationSection(Organization... experiences) {
         this(Arrays.asList(experiences));
     }
 
-    public ExperienceSection(List<Experience> organizations) {
+    public OrganizationSection(List<Organization> organizations) {
         Objects.requireNonNull(organizations, "organizations must not be null");
         this.organizations = organizations;
     }
 
-    public List<Experience> getOrganizations() {
+    public List<Organization> getOrganizations() {
         return organizations;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ExperienceSection)) return false;
+        if (!(o instanceof OrganizationSection)) return false;
 
-        ExperienceSection that = (ExperienceSection) o;
+        OrganizationSection that = (OrganizationSection) o;
 
         return organizations.equals(that.organizations);
     }

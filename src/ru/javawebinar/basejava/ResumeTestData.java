@@ -40,28 +40,28 @@ public class ResumeTestData {
                         "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, SQLite, MS SQL, HSQLDB"));
 
         resume.addSection(SectionType.EXPERIENCE,
-                new ExperienceSection(
-                        new Experience("Java Online Projects", "http://javaops.ru/",
-                                new Experience.Position(2013, Month.OCTOBER, "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок")),
-                        new Experience("Wrike", "https://www.wrike.com/",
-                                new Experience.Position(2014, Month.OCTOBER, 2016, Month.JANUARY, "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.")),
-                        new Experience("RIT Center", null,
-                                new Experience.Position(2012, Month.APRIL, 2014, Month.OCTOBER, "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"))
+                new OrganizationSection(
+                        new Organization("Java Online Projects", "http://javaops.ru/",
+                                new Organization.Position(2013, Month.OCTOBER, "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок")),
+                        new Organization("Wrike", "https://www.wrike.com/",
+                                new Organization.Position(2014, Month.OCTOBER, 2016, Month.JANUARY, "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.")),
+                        new Organization("RIT Center", null,
+                                new Organization.Position(2012, Month.APRIL, 2014, Month.OCTOBER, "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"))
                 ));
 
         resume.addSection(SectionType.EDUCATION,
-                new ExperienceSection(
-                        new Experience("Coursera", "https://www.coursera.org/course/progfun",
-                                new Experience.Position(2013, Month.MARCH, 2013, Month.MAY, "\"Functional Programming Principles in Scala\" by Martin Odersky", null)),
-                        new Experience("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
-                                new Experience.Position(2011, Month.MARCH, 2011, Month.APRIL, "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null)),
-                        new Experience("Siemens AG", "http://www.siemens.ru/",
-                                new Experience.Position(2005, Month.JANUARY, 2005, Month.APRIL, "3 месяца обучения мобильным IN сетям (Берлин)", null)),
-                        new Experience("Alcatel", "http://www.alcatel.ru/",
-                                new Experience.Position(1997, Month.SEPTEMBER, 1998, Month.MARCH, "6 месяцев обучения цифровым телефонным сетям (Москва)", null)),
-                        new Experience("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/",
-                                new Experience.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null),
-                                new Experience.Position(1987, Month.SEPTEMBER, 1993, Month.MARCH, "Инженер (программист Fortran, C)", null))
+                new OrganizationSection(
+                        new Organization("Coursera", "https://www.coursera.org/course/progfun",
+                                new Organization.Position(2013, Month.MARCH, 2013, Month.MAY, "\"Functional Programming Principles in Scala\" by Martin Odersky", null)),
+                        new Organization("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
+                                new Organization.Position(2011, Month.MARCH, 2011, Month.APRIL, "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null)),
+                        new Organization("Siemens AG", "http://www.siemens.ru/",
+                                new Organization.Position(2005, Month.JANUARY, 2005, Month.APRIL, "3 месяца обучения мобильным IN сетям (Берлин)", null)),
+                        new Organization("Alcatel", "http://www.alcatel.ru/",
+                                new Organization.Position(1997, Month.SEPTEMBER, 1998, Month.MARCH, "6 месяцев обучения цифровым телефонным сетям (Москва)", null)),
+                        new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/",
+                                new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null),
+                                new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.MARCH, "Инженер (программист Fortran, C)", null))
                 ));
 
         return resume;
