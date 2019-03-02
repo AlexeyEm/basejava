@@ -1,11 +1,11 @@
 package ru.javawebinar.basejava.storage.serializer;
 
-import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.*;
-import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
-            // TODO implements sections
+
             Map<SectionType, AbstractSection> sections = r.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
@@ -37,34 +37,34 @@ public class DataStreamSerializer implements StreamSerializer {
                     case QUALIFICATIONS:
                         List<String> list = ((ListSection) entry.getValue()).getItems();
                         dos.writeInt(list.size());
-                        for (String s : list) {
-                            dos.writeUTF(s);
-                        }
+                        Writer<String> writer = dos::writeUTF;
+                        writeWithException(list, writer);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
                         List<Organization> listOrganizations = ((OrganizationSection) entry.getValue()).getOrganizations();
                         dos.writeInt(listOrganizations.size());
-                        for (Organization organization : listOrganizations) {
+
+                        Writer<Organization> organizationWriter = organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(ifNull(organization.getHomePage().getUrl()));
 
                             List<Organization.Position> listPositions = organization.getPositions();
                             dos.writeInt(listPositions.size());
-                            for (Organization.Position positions : listPositions) {
-                                dos.writeUTF(new LocalDateAdapter().marshal(positions.getStartDate()));
-                                dos.writeUTF(new LocalDateAdapter().marshal(positions.getEndDate()));
-                                dos.writeUTF(positions.getTitle());
-                                dos.writeUTF(ifNull(positions.getDescription()));
-                            }
-                        }
+                            Writer<Organization.Position> positionWriter = position -> {
+                                dos.writeUTF(position.getStartDate().toString());
+                                dos.writeUTF(position.getEndDate().toString());
+                                dos.writeUTF(position.getTitle());
+                                dos.writeUTF(ifNull(position.getDescription()));
+                            };
+                            writeWithException(listPositions, positionWriter);
+                        };
+                        writeWithException(listOrganizations, organizationWriter);
                         break;
                     default:
                         break;
                 }
             }
-        } catch (Exception e) {
-            throw new StorageException("DataStreamSerializer.doWrite error", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class DataStreamSerializer implements StreamSerializer {
             for (int i = 0; i < contactSize; i++) {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
-            // TODO implements sections
+
             int sectionSize = dis.readInt();
             for (int i = 0; i < sectionSize; i++) {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
@@ -102,7 +102,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         int orgSize = dis.readInt();
                         for (int s = 0; s < orgSize; s++) {
                             String name = dis.readUTF();
-                            String url = ifNull(dis.readUTF());
+                            String url = ifEmpty(dis.readUTF());
 
                             List<Organization.Position> listPositions = new ArrayList<>();
 
@@ -110,10 +110,10 @@ public class DataStreamSerializer implements StreamSerializer {
                             for (int p = 0; p < positionSize; p++) {
                                 listPositions.add(
                                         new Organization.Position(
-                                                new LocalDateAdapter().unmarshal(dis.readUTF()),
-                                                new LocalDateAdapter().unmarshal(dis.readUTF()),
+                                                LocalDate.parse(dis.readUTF()),
+                                                LocalDate.parse(dis.readUTF()),
                                                 dis.readUTF(),
-                                                ifNull(dis.readUTF())
+                                                ifEmpty(dis.readUTF())
                                         ));
                             }
                             listOrganizations.add(new Organization(new Link(name, url), listPositions));
@@ -125,17 +125,30 @@ public class DataStreamSerializer implements StreamSerializer {
                 }
             }
             return resume;
-        } catch (Exception e) {
-            throw new StorageException("DataStreamSerializer.doRead error", e);
         }
     }
 
     private String ifNull(String string) {
         if (string == null) {
             return "";
-        } else if (string.equals("")) {
+        }
+        return string;
+    }
+
+    private String ifEmpty(String string) {
+        if (string.equals("")) {
             return null;
         }
         return string;
+    }
+
+    private interface Writer<T> {
+        void write(T t) throws IOException;
+    }
+
+    private void writeWithException(Collection list, Writer writer) throws IOException {
+        for (Object o : list) {
+            writer.write(o);
+        }
     }
 }
