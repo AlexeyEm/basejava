@@ -17,54 +17,45 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            writeWithException(contacts.entrySet(), dos, contact -> {
+                dos.writeUTF(contact.getKey().name());
+                dos.writeUTF(contact.getValue());
+            });
 
             Map<SectionType, AbstractSection> sections = r.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                SectionType keyName = entry.getKey();
+            writeWithException(sections.entrySet(), dos, section -> {
+                SectionType keyName = section.getKey();
                 dos.writeUTF(keyName.name());
                 switch (keyName) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        dos.writeUTF(entry.getValue().toString());
+                        dos.writeUTF(section.getValue().toString());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> list = ((ListSection) entry.getValue()).getItems();
-                        dos.writeInt(list.size());
-                        Writer<String> writer = dos::writeUTF;
-                        writeWithException(list, writer);
+                        List<String> list = ((ListSection) section.getValue()).getItems();
+                        writeWithException(list, dos, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> listOrganizations = ((OrganizationSection) entry.getValue()).getOrganizations();
-                        dos.writeInt(listOrganizations.size());
-
-                        Writer<Organization> organizationWriter = organization -> {
+                        List<Organization> listOrganizations = ((OrganizationSection) section.getValue()).getOrganizations();
+                        writeWithException(listOrganizations, dos, organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(ifNull(organization.getHomePage().getUrl()));
 
                             List<Organization.Position> listPositions = organization.getPositions();
-                            dos.writeInt(listPositions.size());
-                            Writer<Organization.Position> positionWriter = position -> {
+                            writeWithException(listPositions, dos, position -> {
                                 dos.writeUTF(position.getStartDate().toString());
                                 dos.writeUTF(position.getEndDate().toString());
                                 dos.writeUTF(position.getTitle());
                                 dos.writeUTF(ifNull(position.getDescription()));
-                            };
-                            writeWithException(listPositions, positionWriter);
-                        };
-                        writeWithException(listOrganizations, organizationWriter);
+                            });
+                        });
                         break;
                     default:
                         break;
                 }
-            }
+            });
         }
     }
 
@@ -146,9 +137,10 @@ public class DataStreamSerializer implements StreamSerializer {
         void write(T t) throws IOException;
     }
 
-    private void writeWithException(Collection list, Writer writer) throws IOException {
-        for (Object o : list) {
-            writer.write(o);
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writer<? super T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            writer.write(t);
         }
     }
 }
