@@ -2,7 +2,7 @@ package ru.javawebinar.basejava;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 
 public class MainStream {
@@ -13,19 +13,15 @@ public class MainStream {
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        if (integers.stream().reduce(0, Integer::sum) % 2 != 0) {
-            return integers.stream().filter(o -> o % 2 != 0).collect(Collectors.toList());
+        IntPredicate ip = o -> o % 2 == 0;
+        if (ip.test(integers.stream().reduce(0, Integer::sum))) {
+            return integers.stream().filter(o -> ip.negate().test(o)).collect(Collectors.toList());
         } else {
-            return integers.stream().filter(o -> o % 2 == 0).collect(Collectors.toList());
+            return integers.stream().filter(ip::test).collect(Collectors.toList());
         }
     }
 
     private static int minValue(int[] values) {
-        AtomicInteger i = new AtomicInteger();
-        Arrays.stream(values).distinct().sorted().forEach(n -> {
-            i.updateAndGet(v -> v * 10);
-            i.addAndGet(n);
-        });
-        return i.intValue();
+        return Arrays.stream(values).distinct().sorted().reduce(0, (i, v) -> (i * 10) + v);
     }
 }
