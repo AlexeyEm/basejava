@@ -14,11 +14,8 @@ public class MainStream {
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         IntPredicate ip = o -> o % 2 == 0;
-        if (ip.test(integers.stream().reduce(0, Integer::sum))) {
-            return integers.stream().filter(o -> ip.negate().test(o)).collect(Collectors.toList());
-        } else {
-            return integers.stream().filter(ip::test).collect(Collectors.toList());
-        }
+        boolean checkSum = ip.test(integers.stream().reduce(0, Integer::sum));
+        return integers.stream().filter(o -> ip.negate().test(o) == checkSum).collect(Collectors.toList());
     }
 
     private static int minValue(int[] values) {
