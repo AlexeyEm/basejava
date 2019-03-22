@@ -17,13 +17,12 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public <T> T executeStatement(String statement, PreparatorStatement preparator) {
+    public <T> T executeStatement(String statement, PreparatorStatement<T> preparator) {
         final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(statement)) {
-            T t = (T) preparator.prepare(ps);
-            return t;
+            return preparator.prepare(ps);
         } catch (SQLException e) {
             if (e.getSQLState().equalsIgnoreCase("23505")) {
                 LOG.warning("Resume already exist");

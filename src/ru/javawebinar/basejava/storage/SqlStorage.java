@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,15 +39,15 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        int result = sqlHelper.executeStatement("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
+        sqlHelper.executeStatement("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
             ps.setString(1, r.getFullName());
             ps.setString(2, r.getUuid());
-            return ps.executeUpdate();
+            if (ps.executeUpdate() == 0) {
+                LOG.warning("Resume " + r.getUuid() + " not exist");
+                throw new NotExistStorageException(r.getUuid());
+            }
+            return null;
         });
-        if (result == 2) {
-            LOG.warning("Resume " + r.getUuid() + " not exist");
-            throw new NotExistStorageException(r.getUuid());
-        }
     }
 
     @Override
@@ -62,29 +62,26 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        boolean result = sqlHelper.executeStatement("DELETE FROM resume WHERE uuid =?", ps -> {
+        sqlHelper.executeStatement("DELETE FROM resume WHERE uuid =?", ps -> {
             ps.setString(1, uuid);
-            return ps.execute();
+            if (ps.executeUpdate() == 0) {
+                LOG.warning("Resume " + uuid + " not exist");
+                throw new NotExistStorageException(uuid);
+            }
+            return null;
         });
-        if (!result) {
-            LOG.warning("Resume " + uuid + " not exist");
-            throw new NotExistStorageException(uuid);
-        }
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        final Resume[] arrayResumes = new Resume[size()];
-        sqlHelper.executeStatement("SELECT * FROM resume", ps -> {
+        return sqlHelper.executeStatement("SELECT * FROM resume", ps -> {
             ResultSet rs = ps.executeQuery();
-            int i = 0;
+            List<Resume> list = new ArrayList<>();
             while (rs.next()) {
-                arrayResumes[i] = new Resume(rs.getString("uuid"), rs.getString("full_name"));
-                i++;
+                list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
-            return null;
+            return list;
         });
-        return Arrays.asList(arrayResumes);
     }
 
     @Override
