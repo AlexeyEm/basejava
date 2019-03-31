@@ -39,11 +39,11 @@ public class SqlStorage implements Storage {
                     }
                     Resume r = new Resume(uuid, rs.getString("full_name"));
                     do {
-                        String value = rs.getString("value");
-                        ContactType type = ContactType.valueOf(rs.getString("type"));
-                        r.addContact(type, value);
-                    } while (rs.next());
-
+                        if (rs.getString("resume_uuid") != null) {
+                            addContact(rs, r);
+                        }
+                    }
+                    while (rs.next());
                     return r;
                 });
     }
@@ -59,7 +59,10 @@ public class SqlStorage implements Storage {
                             throw new NotExistStorageException(r.getUuid());
                         }
                     }
-                    sqlHelper.executeStatement("DELETE FROM contact", PreparedStatement::execute);
+                    try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?")) {
+                        ps.setString(1, r.getUuid());
+                        ps.execute();
+                    }
                     insertContacts(conn, r);
                     return null;
                 }
@@ -111,9 +114,9 @@ public class SqlStorage implements Storage {
                             r = new Resume(uuid, rs.getString("full_name"));
                             resumes.add(r);
                         }
-                        String value = rs.getString("value");
-                        ContactType type = ContactType.valueOf(rs.getString("type"));
-                        r.addContact(type, value);
+                        if (rs.getString("resume_uuid") != null) {
+                            addContact(rs, r);
+                        }
                     }
                     return resumes;
                 });
@@ -137,5 +140,11 @@ public class SqlStorage implements Storage {
             }
             ps.executeBatch();
         }
+    }
+
+    private void addContact(ResultSet rs, Resume r) throws SQLException {
+        String value = rs.getString("value");
+        ContactType type = ContactType.valueOf(rs.getString("type"));
+        r.addContact(type, value);
     }
 }
