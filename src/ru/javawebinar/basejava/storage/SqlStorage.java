@@ -5,10 +5,7 @@ import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
@@ -18,7 +15,7 @@ public class SqlStorage implements Storage {
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
@@ -109,35 +106,34 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         return sqlHelper.transactionalExecute(conn -> {
-            List<Resume> resumes = new ArrayList<>();
+            Map<String, Resume> map = new LinkedHashMap<>();
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
                 ResultSet rsResumes = ps.executeQuery();
-                String uuid;
-                Resume resume;
-
                 while (rsResumes.next()) {
-                    uuid = rsResumes.getString("uuid");
-                    resume = new Resume(uuid, rsResumes.getString("full_name"));
-                    resumes.add(resume);
-                    ResultSet rsContacts;
-                    ResultSet rsSections;
-                    try (PreparedStatement psContacts = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid =?")) {
-                        psContacts.setString(1, uuid);
-                        rsContacts = psContacts.executeQuery();
-                        while (rsContacts.next()) {
-                            addContact(rsContacts, resume);
-                        }
-                    }
-                    try (PreparedStatement psSections = conn.prepareStatement("SELECT * FROM section WHERE resume_uuid =?")) {
-                        psSections.setString(1, uuid);
-                        rsSections = psSections.executeQuery();
-                        while (rsSections.next()) {
-                            addSection(rsSections, resume);
-                        }
-                    }
+                    String uuid = rsResumes.getString("uuid");
+                    Resume resume = new Resume(uuid, rsResumes.getString("full_name"));
+                    map.put(uuid, resume);
                 }
             }
-            return resumes;
+            try (PreparedStatement psContacts = conn.prepareStatement("SELECT * FROM contact ORDER BY resume_uuid")) {
+                ResultSet rsContacts = psContacts.executeQuery();
+                while (rsContacts.next()) {
+                    String uuid = rsContacts.getString("resume_uuid");
+                    Resume resume = map.get(uuid);
+                    addContact(rsContacts, resume);
+                    map.put(uuid, resume);
+                }
+            }
+            try (PreparedStatement psSections = conn.prepareStatement("SELECT * FROM section ORDER BY resume_uuid")) {
+                ResultSet rsSections = psSections.executeQuery();
+                while (rsSections.next()) {
+                    String uuid = rsSections.getString("resume_uuid");
+                    Resume resume = map.get(uuid);
+                    addSection(rsSections, resume);
+                    map.put(uuid, resume);
+                }
+            }
+            return new ArrayList<>(map.values());
         });
     }
 
