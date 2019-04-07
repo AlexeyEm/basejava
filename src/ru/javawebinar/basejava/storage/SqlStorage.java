@@ -121,7 +121,6 @@ public class SqlStorage implements Storage {
                     String uuid = rsContacts.getString("resume_uuid");
                     Resume resume = map.get(uuid);
                     addContact(rsContacts, resume);
-                    map.put(uuid, resume);
                 }
             }
             try (PreparedStatement psSections = conn.prepareStatement("SELECT * FROM section ORDER BY resume_uuid")) {
@@ -130,7 +129,6 @@ public class SqlStorage implements Storage {
                     String uuid = rsSections.getString("resume_uuid");
                     Resume resume = map.get(uuid);
                     addSection(rsSections, resume);
-                    map.put(uuid, resume);
                 }
             }
             return new ArrayList<>(map.values());
