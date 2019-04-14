@@ -147,5 +147,9 @@ public class Organization implements Serializable {
                     ", description='" + description + '\'' +
                     '}';
         }
+
+        public String getPeriod() {
+            return startDate.format(DateTimeFormatter.ofPattern("MM/yyyy")) + " - " + ((endDate.equals(NOW)) ? "Сейчас" : endDate.format(DateTimeFormatter.ofPattern("MM/yyyy")));
+        }
     }
 }
