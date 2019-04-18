@@ -27,12 +27,82 @@
         </c:forEach>
         <h3>Секции:</h3>
         <c:forEach var="type" items="<%=SectionType.values()%>">
-            <c:if test="${type != 'EXPERIENCE' && type != 'EDUCATION'}">
-                <dl>
-                    <dt>${type.title}</dt>
-                    <dd><textarea name="${type.name()}" cols="50" rows="3">${resume.getSection(type)}</textarea></dd>
-                </dl>
-            </c:if>
+            <c:choose>
+                <c:when test="${(type == 'PERSONAL')||(type == 'OBJECTIVE')||(type == 'ACHIEVEMENT')||(type == 'QUALIFICATIONS')}">
+                    <dl>
+                        <dt>${type.title}</dt>
+                        <dd><textarea name="${type.name()}" cols="50" rows="3">${resume.getSection(type)}</textarea>
+                        </dd>
+                    </dl>
+                </c:when>
+                <c:when test="${(type == 'EXPERIENCE')||(type == 'EDUCATION')}">
+                    <dl>
+                        <dt>${type.title}</dt>
+                        <dd>
+                            <c:set var="orgNum" value="0" scope="page"/>
+                            <c:forEach var="organization" items="${resume.getSection(type).getOrganizations()}">
+                                <c:set var="orgNum" value="${orgNum + 1}" scope="page"/>
+                                <table border="0">
+                                    <tr>
+                                        <th align="left">Организация:</th>
+                                        <td align="left" colspan="2"><input type="text" name="organizationName${type}${orgNum}"
+                                                                            value='${organization.getHomePage().getName()}'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">Сайт:</td>
+                                        <td align="left" colspan="2"><input type="text" name="organizationUrl${type}${orgNum}"
+                                                                            value="${organization.getHomePage().getUrl()}">
+                                        </td>
+                                    </tr>
+                                    <c:set var="posNum" value="0" scope="page"/>
+                                    <c:forEach var="position" items="${organization.getPositions()}">
+                                        <c:set var="posNum" value="${posNum + 1}" scope="page"/>
+                                        <tr>
+                                            <td></td>
+                                            <td>Дата начала:</td>
+                                            <td><input type="date" name="positionBegin${type}${orgNum}${posNum}" size=30
+                                                       value="${position.getStartDate()}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>Дата окончания:</td>
+                                            <td><input type="date" name="positionEnd${type}${orgNum}${posNum}" size=30
+                                                       value="${position.getEndDate()}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>Позиция:</td>
+                                            <td><input type="text" name="positionName${type}${orgNum}${posNum}" size=30
+                                                       value='${position.getTitle()}'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>Описание:</td>
+                                            <td><input type="text" name="positionDesc${type}${orgNum}${posNum}" size=30
+                                                       value='${position.getDescription()}'>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                                <hr>
+                                <input type="hidden" name="positions${type}${orgNum}" value="${posNum}">
+                            </c:forEach>
+                            <c:if test = "${resume.uuid == null}">
+                                <jsp:include page="fragments/blankOrganizationSection.jsp" >
+                                    <jsp:param name="type" value="${type}" />
+                                </jsp:include>
+                            </c:if>
+                            <c:if test = "${resume.uuid != null}">
+                                <input type="hidden" name="${type}" value="${orgNum}">
+                            </c:if>
+                        </dd>
+                    </dl>
+                </c:when>
+            </c:choose>
         </c:forEach>
         <hr>
         <button type="submit">Сохранить</button>
