@@ -6,13 +6,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="css/action.js"></script>
     <jsp:useBean id="resume" type="ru.javawebinar.basejava.model.Resume" scope="request"/>
     <title>Резюме ${resume.fullName}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
+<jsp:include page="fragments/blankOrganization.jsp"/>
+<jsp:include page="fragments/blankPosition.jsp"/>
 <section>
-    <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
+    <form id="test" method="post" action="resume" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
@@ -37,68 +41,93 @@
                 </c:when>
                 <c:when test="${(type == 'EXPERIENCE')||(type == 'EDUCATION')}">
                     <dl>
+                            <%--<dt id=${type}>${type.title}</dt>--%>
                         <dt>${type.title}</dt>
-                        <dd>
+                        <dd id=${type}>
                             <c:set var="orgNum" value="0" scope="page"/>
                             <c:forEach var="organization" items="${resume.getSection(type).getOrganizations()}">
                                 <c:set var="orgNum" value="${orgNum + 1}" scope="page"/>
-                                <table border="0">
-                                    <tr>
-                                        <th align="left">Организация:</th>
-                                        <td align="left" colspan="2"><input type="text" name="organizationName${type}${orgNum}"
-                                                                            value='${organization.getHomePage().getName()}'>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="left">Сайт:</td>
-                                        <td align="left" colspan="2"><input type="text" name="organizationUrl${type}${orgNum}"
-                                                                            value="${organization.getHomePage().getUrl()}">
-                                        </td>
-                                    </tr>
-                                    <c:set var="posNum" value="0" scope="page"/>
-                                    <c:forEach var="position" items="${organization.getPositions()}">
-                                        <c:set var="posNum" value="${posNum + 1}" scope="page"/>
-                                        <tr>
-                                            <td></td>
-                                            <td>Дата начала:</td>
-                                            <td><input type="date" name="positionBegin${type}${orgNum}${posNum}" size=30
-                                                       value="${position.getStartDate()}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>Дата окончания:</td>
-                                            <td><input type="date" name="positionEnd${type}${orgNum}${posNum}" size=30
-                                                       value="${position.getEndDate()}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>Позиция:</td>
-                                            <td><input type="text" name="positionName${type}${orgNum}${posNum}" size=30
-                                                       value='${position.getTitle()}'>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>Описание:</td>
-                                            <td><input type="text" name="positionDesc${type}${orgNum}${posNum}" size=30
-                                                       value='${position.getDescription()}'>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </table>
-                                <hr>
-                                <input type="hidden" name="positions${type}${orgNum}" value="${posNum}">
+                                <div id=${type}${orgNum} class="organization">
+                                    <dl>
+                                        <dt id="${type}${orgNum}">
+                                            <ul>
+                                                <li>
+                                                    <label>Организация:</label>
+                                                    <input type="text"
+                                                           name="organizationName${type}${orgNum}"
+                                                           class="organizationName"
+                                                           value="${organization.getHomePage().getName()}">
+                                                </li>
+                                                <li>
+                                                    <label>Сайт:</label>
+                                                    <input type="text"
+                                                           name="organizationUrl${type}${orgNum}"
+                                                           class="organizationUrl"
+                                                           value="${organization.getHomePage().getUrl()}">
+                                                </li>
+                                            </ul>
+                                            <button class="deleteOrganization" data-id="${type}${orgNum}"
+                                                    data-type="${type}">
+                                                Удалить организацию
+                                            </button>
+                                        </dt>
+                                        <c:set var="posNum" value="0" scope="page"/>
+                                        <c:forEach var="position" items="${organization.getPositions()}">
+                                            <c:set var="posNum" value="${posNum + 1}" scope="page"/>
+                                            <dd id="${type}${orgNum}" class="position">
+                                                <div>
+                                                    <ul>
+                                                        <li>
+                                                            <label>Дата начала:</label>
+                                                            <input type="date"
+                                                                   class="positionBegin"
+                                                                   name="positionBegin${type}${orgNum}${posNum}"
+                                                                   size=30
+                                                                   value="${position.getStartDate()}">
+                                                        </li>
+                                                        <li>
+                                                            <label>Дата окончания:</label>
+                                                            <input type="date"
+                                                                   class="positionEnd"
+                                                                   name="positionEnd${type}${orgNum}${posNum}"
+                                                                   size=30
+                                                                   value="${position.getEndDate()}">
+                                                        </li>
+                                                        <li>
+                                                            <label>Позиция:</label>
+                                                            <input type="text"
+                                                                   class="positionName"
+                                                                   name="positionName${type}${orgNum}${posNum}"
+                                                                   size=30
+                                                                   value='${position.getTitle()}'>
+                                                        </li>
+                                                        <li>
+                                                            <label>Описание:</label>
+                                                            <input type="text"
+                                                                   class="positionDesc"
+                                                                   name="positionDesc${type}${orgNum}${posNum}"
+                                                                   size=30
+                                                                   value='${position.getDescription()}'>
+                                                        </li>
+                                                    </ul>
+
+                                                    <button class="deletePosition" data-id="${type}${orgNum}"
+                                                            data-action="deletePosition">Удалить позицию
+                                                    </button>
+                                                </div>
+                                            </dd>
+                                        </c:forEach>
+                                        <button class="addPosition" data-id="${type}${orgNum}"
+                                                data-action="addPosition">Добавить позицию
+                                        </button>
+                                        <hr>
+                                        <input type="hidden" name="positions${type}${orgNum}" value="${posNum}"
+                                               class="positions${type}">
+                                    </dl>
+                                </div>
                             </c:forEach>
-                            <c:if test = "${resume.uuid == null}">
-                                <jsp:include page="fragments/blankOrganizationSection.jsp" >
-                                    <jsp:param name="type" value="${type}" />
-                                </jsp:include>
-                            </c:if>
-                            <c:if test = "${resume.uuid != null}">
-                                <input type="hidden" name="${type}" value="${orgNum}">
-                            </c:if>
+                            <input type="hidden" name="${type}" value="${orgNum}">
+                            <button class="addOrganization" data-id="${type}">Добавить организацию</button>
                         </dd>
                     </dl>
                 </c:when>
@@ -108,6 +137,7 @@
         <button type="submit">Сохранить</button>
         <button onclick="window.history.back()">Отменить</button>
     </form>
+    <pre id="output"></pre>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

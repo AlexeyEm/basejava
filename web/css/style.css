@@ -35,14 +35,11 @@ dd {
     display: inline-block;
     margin-left: 8px;
     vertical-align: top;
+    width: 500px;
 }
 
 h2, h3 {
     margin: 15px 0 5px;
-}
-
-li {
-    margin: 15px 0;
 }
 
 a[href^="skype:"] {
@@ -68,4 +65,35 @@ a[href^="https://www.linkedin.com"] {
 a[href*="github."] {
     padding-left: 20px !important;
     background: url(../img/gh.png) no-repeat center left;
+}
+
+
+ul {
+    width: 750px;
+    list-style-type: none;
+    list-style-position: outside;
+    margin: 0px;
+    padding: 0px;
+}
+
+li {
+    padding: 5px;
+    position: relative;
+}
+
+label {
+    width:150px;
+    margin-top: 3px;
+    display:inline-block;
+    float:left;
+    padding:3px;
+}
+input {
+    height:20px;
+    width:220px;
+    padding:5px 8px;
+}
+
+#initHiddenPosition, #initHiddenOrganization {
+    display: none;
 }
